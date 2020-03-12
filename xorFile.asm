@@ -1,8 +1,8 @@
 dane1 segment
  
-txt1	db 20 dup(0)
+txt1	db 20 dup('$')
 txt2 	db 20 dup(0)
-key	db 200 dup('$')
+key	db 200 dup(0)
 
 wsk1	dw ?
 wsk2	dw ?
@@ -180,51 +180,98 @@ koniec_programu:
 ; -------------------------- parametr 1 --------------------------------	
 	mov	si,offset txt1 
 p1:	
-	push cx
 	mov	al, byte ptr ds:[di]
 	inc di ; di - iteruje po wejscu
 	cmp al, ' '
 	jz poczatek2
+	cmp al, '	'
+	jz poczatek2
 	mov	byte ptr es:[si],al
 	inc	si ; iteruje po txt1
-	pop	cx
-	loop	p1
+	loop p1
  
 
 ; -------------------------- parametr 2 --------------------------------	
 poczatek2:
-	pop cx
 	dec cx
-	mov si, offset txt2
+pomin_spacje2:
+	cmp cx, 0
+	jz  blad_zla_liczba_arg
+	mov	al, byte ptr ds:[di]
+	cmp al, ' '
+	jnz p2t
+p2r:
+	inc di ; di - iteruje po wejscu
+	dec cx
+	jmp pomin_spacje2
+p2t:
+cmp al, '	'	
+jz  p2r	
 p2:	
-	push cx
+	mov si, offset txt2
+p22:
 	mov	al, byte ptr ds:[di]
 	inc	di  ; di - iteruje po wejscu
 	cmp al, ' '
 	jz poczatek3
+	cmp al, '	'
+	jz poczatek3
 	mov	byte ptr es:[si],al
 	inc	si ; iteruje po txt2
-	pop	cx
-	loop	p2 
+	loop	p22 
+ 
  
  
 ; -------------------------- parametr 3 --------------------------------	
 poczatek3:
-	pop cx
 	dec cx
+pomin_spacje3:
+	cmp cx, 0
+	jz blad_zla_liczba_arg
+	mov	al, byte ptr ds:[di]
+	cmp al, ' '
+	jnz p3t
+p3r:
+	inc di ; di - iteruje po wejscu
 	dec cx
-	mov si, offset key
-p3:		
-	push cx
+	jmp pomin_spacje3
+	
+	
+p3t:
+cmp al, '	'	
+jz  p3r
+p3:	
+	mov si, offset key	
+p32:
 	mov	al, byte ptr ds:[di]
 	inc	di  ; di - iteruje po wejscu
 	cmp al, ' '
 	jz blad_zla_liczba_arg
+	cmp al, '	'
+	jz blad_zla_liczba_arg
 	mov	byte ptr es:[si],al	
 	inc	si ; iteruje po key
-	pop	cx
-	loop	p3
- 
+	loop	p32
+	
+	
+	
+	;mov ax, seg txt1
+	;mov ds, ax
+	;mov dx, offset txt1
+	;call print
+	;call print_enter
+	
+	;mov ax, seg txt2
+	;mov ds, ax
+	;mov dx, offset txt2
+	;call print
+	;call print_enter
+	
+	;mov ax, seg key
+	;mov ds, ax
+	;mov dx, offset key
+	;call print
+	;call print_enter
 	ret
 	
 
