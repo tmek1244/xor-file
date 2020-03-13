@@ -1,8 +1,8 @@
 dane1 segment
  
-txt1	db 20 dup(0)
+txt1	db 20 dup('$')
 txt2 	db 20 dup(0)
-key	db 200 dup('$')
+key	db 200 dup(0)
 
 wsk1	dw ?
 wsk2	dw ?
