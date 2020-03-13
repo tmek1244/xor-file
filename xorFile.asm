@@ -180,51 +180,87 @@ koniec_programu:
 ; -------------------------- parametr 1 --------------------------------	
 	mov	si,offset txt1 
 p1:	
-	push cx
 	mov	al, byte ptr ds:[di]
 	inc di ; di - iteruje po wejscu
 	cmp al, ' '
 	jz poczatek2
+	cmp al, '	'
+	jz poczatek2
 	mov	byte ptr es:[si],al
 	inc	si ; iteruje po txt1
-	pop	cx
-	loop	p1
+	loop p1
  
 
 ; -------------------------- parametr 2 --------------------------------	
 poczatek2:
-	pop cx
 	dec cx
-	mov si, offset txt2
+pomin_spacje2:
+	cmp cx, 0
+	jz  blad_zla_liczba_arg
+	mov	al, byte ptr ds:[di]
+	cmp al, ' '
+	jnz p2t
+p2r:
+	inc di ; di - iteruje po wejscu
+	dec cx
+	jmp pomin_spacje2
+p2t:
+cmp al, '	'	
+jz  p2r	
 p2:	
-	push cx
+	mov si, offset txt2
+p22:
 	mov	al, byte ptr ds:[di]
 	inc	di  ; di - iteruje po wejscu
 	cmp al, ' '
 	jz poczatek3
+	cmp al, '	'
+	jz poczatek3
 	mov	byte ptr es:[si],al
 	inc	si ; iteruje po txt2
-	pop	cx
-	loop	p2 
+	loop	p22 
+ 
  
  
 ; -------------------------- parametr 3 --------------------------------	
 poczatek3:
-	pop cx
 	dec cx
+znajdz_cudzyslow:
+	cmp cx, 0
+	jz blad_zla_liczba_arg
+	mov	al, byte ptr ds:[di]
+	cmp al, '"'
+	jz p3t
+p3r:
+	inc di ; di - iteruje po wejscu
 	dec cx
-	mov si, offset key
-p3:		
-	push cx
+	jmp znajdz_cudzyslow
+	
+	
+p3t:
+	inc di
+	dec cx
+;cmp al, '	'	
+;jz  p3r
+p3:	
+	mov si, offset key	
+p32:
 	mov	al, byte ptr ds:[di]
 	inc	di  ; di - iteruje po wejscu
-	cmp al, ' '
-	jz blad_zla_liczba_arg
+;	cmp al, ' '
+;	jz blad_zla_liczba_arg
+;	cmp al, '	'
+;	jz blad_zla_liczba_arg
+	cmp al, '"'
+	jz return
 	mov	byte ptr es:[si],al	
 	inc	si ; iteruje po key
-	pop	cx
-	loop	p3
- 
+	loop	p32
+	
+	;komunikat ze na koncu klucza powinno byc "
+	
+
+return:
 	ret
 	
 
